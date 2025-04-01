@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Models\Book;
+use App\Models\Movie;
 
 
-class BookController extends Controller {
+class MovieController extends Controller {
     /**
      * Create a new controller instance.
      *
@@ -15,26 +15,26 @@ class BookController extends Controller {
      */
 
      public function getAll() {
-         $books = Book::join('authors', 'author_id', '=', 'authors.id')->select('books.id','title','published_date','name')->orderBy('published_date', 'desc')->get();
-         return response()->json($books);
+         $movies = Movie::join('directors', 'director_id', '=', 'directors.id')->select('movies.id','title','short_description','name')->orderBy('movies.id', 'desc')->get();
+         return response()->json($movies);
      }
 
 
      public function getOne($id) {
-        $book = Book::join('authors', 'author_id', '=', 'authors.id')->select('books.id','title','book_image','published_date','name')->where('books.id', '=', $id)->get();
-         return response()->json($book);
+        $movie = Movie::join('directors', 'director_id', '=', 'directors.id')->select('movies.id','title','short_description','poster','name')->where('movies.id', '=', $id)->get();
+         return response()->json($movie);
      }
 
 
      public function save(Request $request) {
         $this->validate($request, [
             'title' => 'required',
-            'author_id' => 'required',
-            'published_date' => 'required|date',
-            'book_image' => 'required'
+            'director_id' => 'required',
+            'short_description' => 'required',
+            'poster' => 'required'
         ]);
-        $book = Book::create($request->all());
-        return response()->json($book, 201);
+        $movie = Movie::create($request->all());
+        return response()->json($movie, 201);
     }
 
 
@@ -67,22 +67,22 @@ class BookController extends Controller {
     
 
     public function update(Request $request, $id) {
-        $book = Book::findOrFail($id);
+        $movie = Movie::findOrFail($id);
     
         $this->validate($request, [
             'title' => 'required',
-            'author_id' => 'required',
-            'published_date' => 'required|date',
-            'book_image' => 'required'
+            'director_id' => 'required',
+            'short_description' => 'required',
+            'poster' => 'required'
         ]);
-        $book->update($request->all());
-        return response()->json($book);
+        $movie->update($request->all());
+        return response()->json($movie);
     }
     
     
     public function delete($id) {
-        $book = Book::findOrFail($id);
-        $book->delete();
+        $movie = Movie::findOrFail($id);
+        $movie->delete();
         return response()->json(null, 204);
     }
     
